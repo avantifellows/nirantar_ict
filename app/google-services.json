@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "979652970101",
+    "project_id": "avantifellows",
+    "storage_bucket": "avantifellows.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979652970101:android:ee1e5b5829eb7e92d05a3c",
+        "android_client_info": {
+          "package_name": "com.avantifellows.nirantar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "979652970101-sb1hfbe7atef9brqkjo1dcd2pu7kos5o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_1ivAcGQN_C-aPDx07ovNuqABPgf-kac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "979652970101-sb1hfbe7atef9brqkjo1dcd2pu7kos5o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
