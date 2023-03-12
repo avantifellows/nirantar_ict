@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.avantifellows.nirantar.APIService
 import com.avantifellows.nirantar.BASE_URL
 import com.avantifellows.nirantar.ContentFile
+import com.avantifellows.nirantar.getFirestoreFileList
 import kotlinx.coroutines.launch
 
 class ContentFileListViewModel : ViewModel() {
@@ -24,8 +25,11 @@ class ContentFileListViewModel : ViewModel() {
             val apiService = APIService.getInstance()
             try {
                 _fileList.clear()
-                _fileList.addAll(apiService.getFileList())
+                Log.d("YO", "Calling Firebase")
+                _fileList.addAll(getFirestoreFileList())
                 Log.d("YO", _fileList.toString())
+
+//                getFirestoreFileList()
             } catch (e: Exception) {
                 errorMessage = e.message.toString()
                 Log.d("YO", errorMessage)

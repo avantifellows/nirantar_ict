@@ -1,6 +1,11 @@
 package com.avantifellows.nirantar
 
+import android.content.ContentValues.TAG
+import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.tasks.await
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -9,20 +14,26 @@ import retrofit2.http.GET
 
 
 data class ContentFile(
+
+    @PropertyName("Grade")
     @SerializedName("Grade")
-    var grade: Int,
+    var grade: Int = 0,
 
     @SerializedName("Description")
-    var description: String,
+    @PropertyName("Description")
+    var description: String = "",
 
     @SerializedName("Title")
-    var title: String,
+    @PropertyName("Title")
+    var title: String = "",
 
     @SerializedName("Subtitle")
-    var subtitle: String,
+    @PropertyName("Subtitle")
+    var subtitle: String = "",
 
     @SerializedName("Link")
-    var link: String
+    @PropertyName("Link")
+    var link: String = ""
 )
 
 const val BASE_URL = APPS_SCRIPT_URL
@@ -48,5 +59,20 @@ interface APIService {
             return apiService!!
         }
     }
+}
+
+suspend fun getFirestoreFileList(): List<ContentFile> {
+    val firestore = FirebaseFirestore.getInstance()
+    val contentFileList : MutableList<ContentFile> = mutableListOf()
+    val querySnapshot = firestore.collection("NirantarICTLessonData").get().await()
+
+    for (document in querySnapshot) {
+        val contentFile = document.toObject(ContentFile::class.java)
+        Log.d(TAG, document.id + " => ${contentFile.title}")
+        contentFileList.add(contentFile)
+
+    }
+
+    return contentFileList
 }
 
