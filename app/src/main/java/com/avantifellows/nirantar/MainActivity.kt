@@ -4,26 +4,37 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.avantifellows.nirantar.ui.screens.ContentFileList
+import androidx.compose.ui.unit.dp
+import com.avantifellows.nirantar.ui.screens.HomeScreen
 import com.avantifellows.nirantar.ui.screens.LoginPage
 import com.avantifellows.nirantar.ui.theme.MyApplicationTheme
+import com.avantifellows.nirantar.ui.theme.Teal200
+import com.avantifellows.nirantar.ui.theme.Teal700
 import com.avantifellows.nirantar.viewmodels.ContentFileListViewModel
 import com.avantifellows.nirantar.viewmodels.LoginViewModel
 import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var analytics: FirebaseAnalytics
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this);
+        analytics = FirebaseAnalytics.getInstance(this)
 
         setContent {
             MyApplicationTheme() {
@@ -40,15 +51,46 @@ private fun App() {
 
     val contentFileListVm = ContentFileListViewModel()
     val loginVm = LoginViewModel()
+    val analytics = FirebaseAnalytics.getInstance(LocalContext.current)
 
     if (!loggedIn) {
         LoginPage(onContinueClicked =  { teacherId: String ->
             sharedPref.edit().putBoolean("loggedIn", true).commit()
             sharedPref.edit().putString("teacherId", teacherId).commit()
+            analytics.setUserId(teacherId)
+            analytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+                param(FirebaseAnalytics.Param.ITEM_NAME, "name")
+                param(FirebaseAnalytics.Param.CONTENT_TYPE, "image")
+            }
             loggedIn = true
         }, loginVm)
     } else {
-        ContentFileList(contentFileListVm)
+        Scaffold(
+            bottomBar = {
+                BottomAppBar(backgroundColor = Teal700) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Button(
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Teal200, contentColor = Color.White),
+                            onClick =  {
+                                sharedPref.edit().remove("loggedIn").commit()
+                                sharedPref.edit().remove("teacherId").commit()
+                                loggedIn = false
+                            },
+                            modifier = Modifier.height(36.dp)
+                        ) {
+                            Text("Logout", color=Color.Gray)
+                        }
+                    }
+                }
+            }
+        ) {
+            HomeScreen(contentFileListVm)
+        }
     }
 }
 
@@ -56,6 +98,6 @@ private fun App() {
 @Composable
 fun DefaultPreview() {
     MyApplicationTheme() {
-        ContentFileList(ContentFileListViewModel())
+        HomeScreen(ContentFileListViewModel())
     }
 }

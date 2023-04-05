@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.avantifellows.nirantar.APIService
 import com.avantifellows.nirantar.BASE_URL
 import com.avantifellows.nirantar.ContentFile
 import com.avantifellows.nirantar.getFirestoreFileList
@@ -22,14 +21,11 @@ class ContentFileListViewModel : ViewModel() {
     fun getContentFileList() {
         Log.d("YO", BASE_URL)
         viewModelScope.launch {
-            val apiService = APIService.getInstance()
             try {
                 _fileList.clear()
                 Log.d("YO", "Calling Firebase")
                 _fileList.addAll(getFirestoreFileList())
                 Log.d("YO", _fileList.toString())
-
-//                getFirestoreFileList()
             } catch (e: Exception) {
                 errorMessage = e.message.toString()
                 Log.d("YO", errorMessage)

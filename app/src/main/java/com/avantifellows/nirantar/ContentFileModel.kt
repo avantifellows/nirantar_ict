@@ -14,7 +14,6 @@ import retrofit2.http.GET
 
 
 data class ContentFile(
-
     @PropertyName("Grade")
     @SerializedName("Grade")
     var grade: Int = 0,
@@ -33,7 +32,12 @@ data class ContentFile(
 
     @SerializedName("Link")
     @PropertyName("Link")
-    var link: String = ""
+    var link: String = "",
+
+    @get:PropertyName("Chapter Code") @set:PropertyName("Chapter Code") var chapterCode: String = "",
+    @get:PropertyName("Subject Code") @set:PropertyName("Subject Code") var subjectCode: String = "",
+    @get:PropertyName("Chapter Name") @set:PropertyName("Chapter Name") var chapterName: String = "",
+    @get:PropertyName("Subject Name") @set:PropertyName("Subject Name") var subjectName: String = ""
 )
 
 const val BASE_URL = APPS_SCRIPT_URL
@@ -68,6 +72,8 @@ suspend fun getFirestoreFileList(): List<ContentFile> {
 
     for (document in querySnapshot) {
         val contentFile = document.toObject(ContentFile::class.java)
+        if (contentFile.link == "")
+            continue
         Log.d(TAG, document.id + " => ${contentFile.title}")
         contentFileList.add(contentFile)
 
