@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.avantifellows.nirantar.ContentFile
 import com.avantifellows.nirantar.components.LessonPlan
 import com.avantifellows.nirantar.viewmodels.ContentFileListViewModel
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun HomeScreen(
@@ -26,12 +25,25 @@ fun HomeScreen(
     var selectedLesson by remember { mutableStateOf<ContentFile?>(null) }
     val context = LocalContext.current
     var currentScreenState by remember { mutableStateOf("home") }
-    var downloadProgress by remember { mutableStateOf<StateFlow<Int>?>(null) }
-    val scope = rememberCoroutineScope()
 
+
+    // Check and set active lesson from shared preferences
+    fun checkAndSetActiveLesson() {
+        Log.d("YO", "Checking Shared preferences")
+        val sharedPreferences = context.getSharedPreferences("viewed_lessons", Context.MODE_PRIVATE)
+        for (contentFile in vm.contentFileList) {
+            Log.d("YO", contentFile.title)
+            if (sharedPreferences.getBoolean(contentFile.title, false)) {
+                selectedLesson = contentFile
+                currentScreenState = "doneWithLesson"
+                break
+            }
+        }
+    }
 
     LaunchedEffect(Unit, block = {
-        vm.getContentFileList()
+        vm.getContentFileListAsync() { checkAndSetActiveLesson()}
+
     })
 
     when (currentScreenState) {
@@ -66,7 +78,6 @@ fun HomeScreen(
             if (selectedLesson != null) {
                 LessonCompletionScreen(contentFile = selectedLesson!!) {
                     currentScreenState = "home"
-
                     // Reset the SharedPreferences value for the viewed lesson
                     val sharedPreferences =
                         context.getSharedPreferences("viewed_lessons", Context.MODE_PRIVATE)
