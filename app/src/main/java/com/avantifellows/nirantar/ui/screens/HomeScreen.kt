@@ -4,23 +4,19 @@ import LaunchLessonPlan
 import LessonCompletionScreen
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import com.avantifellows.nirantar.ContentFile
 import com.avantifellows.nirantar.components.LessonPlan
 import com.avantifellows.nirantar.viewmodels.ContentFileListViewModel
 
 @Composable
 fun HomeScreen(
-    vm: ContentFileListViewModel
+    vm: ContentFileListViewModel,
+    modifier: Modifier
 ) {
     var selectedLesson by remember { mutableStateOf<ContentFile?>(null) }
     val context = LocalContext.current
@@ -49,10 +45,7 @@ fun HomeScreen(
     when (currentScreenState) {
         "home" -> {
             LazyColumn(
-                modifier = Modifier
-                    .padding(vertical = 4.dp)
-                    .fillMaxWidth()
-                    .background(color = Color.Transparent)
+                modifier = modifier
             ) {
                 items(items = vm.contentFileList) { contentFile ->
                     LessonPlan(contentFile) {
@@ -70,7 +63,6 @@ fun HomeScreen(
                 LaunchLessonPlan(selectedLesson = selectedLesson!!)
                 {
                     currentScreenState = "doneWithLesson"
-
                 }
             }
         }

@@ -71,6 +71,7 @@ fun LoginPage(onContinueClicked: (String) -> Unit, loginVm: LoginViewModel) {
             onClick = {
                 loginVm.validateTeacherId(loginVm.teacherId, onContinueClicked)
             },
+            enabled = loginVm.teacherId.isNotBlank(),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")

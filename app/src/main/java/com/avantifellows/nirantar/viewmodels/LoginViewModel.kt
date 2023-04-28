@@ -48,7 +48,6 @@ class LoginViewModel() : ViewModel() {
                         Log.d("YO", "${doc.data}")
                     }
                     if (!result.isEmpty) {
-                        Log.d("YO", "${result.documents[0].data}")
                         _teacherIDValidationState.update { LoginPageUIState(true, "Teacher ID exists", teacherId) } // TeacherIdValidationResult(true, "Teacher ID found", "")
 
                         onContinueClicked(teacherId)

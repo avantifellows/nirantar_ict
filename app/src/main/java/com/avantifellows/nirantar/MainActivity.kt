@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.avantifellows.nirantar.ui.screens.HomeScreen
 import com.avantifellows.nirantar.ui.screens.LoginPage
 import com.avantifellows.nirantar.ui.theme.MyApplicationTheme
-import com.avantifellows.nirantar.ui.theme.Teal200
+import com.avantifellows.nirantar.ui.theme.Navy
 import com.avantifellows.nirantar.ui.theme.Teal700
 import com.avantifellows.nirantar.viewmodels.ContentFileListViewModel
 import com.avantifellows.nirantar.viewmodels.LoginViewModel
@@ -54,7 +55,7 @@ private fun App() {
     val analytics = FirebaseAnalytics.getInstance(LocalContext.current)
 
     if (!loggedIn) {
-        LoginPage(onContinueClicked =  { teacherId: String ->
+        LoginPage(onContinueClicked = { teacherId: String ->
             sharedPref.edit().putBoolean("loggedIn", true).commit()
             sharedPref.edit().putString("teacherId", teacherId).commit()
             analytics.setUserId(teacherId)
@@ -67,7 +68,7 @@ private fun App() {
     } else {
         Scaffold(
             bottomBar = {
-                BottomAppBar(backgroundColor = Teal700) {
+                BottomAppBar(backgroundColor = Navy) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -75,21 +76,29 @@ private fun App() {
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Button(
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Teal200, contentColor = Color.White),
-                            onClick =  {
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Teal700,
+                                contentColor = Color.White
+                            ),
+                            onClick = {
                                 sharedPref.edit().remove("loggedIn").commit()
                                 sharedPref.edit().remove("teacherId").commit()
                                 loggedIn = false
                             },
                             modifier = Modifier.height(36.dp)
                         ) {
-                            Text("Logout", color=Color.Gray)
+                            Text("Logout", color = Color.White)
                         }
                     }
                 }
             }
         ) {
-            HomeScreen(contentFileListVm)
+            HomeScreen(
+                contentFileListVm, modifier = Modifier
+                    .padding(vertical = 56.dp)
+                    .fillMaxWidth()
+                    .background(color = Color.Transparent)
+            )
         }
     }
 }
@@ -98,6 +107,6 @@ private fun App() {
 @Composable
 fun DefaultPreview() {
     MyApplicationTheme() {
-        HomeScreen(ContentFileListViewModel())
+        HomeScreen(ContentFileListViewModel(), Modifier.padding(bottom = 56.dp))
     }
 }
