@@ -75,17 +75,20 @@ fun HomeScreen(
                 val sharedPreferences =
                     context.getSharedPreferences("viewed_lessons", Context.MODE_PRIVATE)
                 val sessionId = sharedPreferences.getString("session_id", "")
-                val startTime = sharedPreferences.getLong("timestamp", 0)
-                val currentTime = Instant.now().toEpochMilli()  // Get current time in milliseconds
-                val duration = Duration.between(
-                    Instant.ofEpochMilli(startTime),
-                    Instant.ofEpochMilli(currentTime)
-                ).toSeconds()
+
+
                 LessonCompletionScreen(
-                    contentFile = selectedLesson!!,
-                    sessionId = sessionId!!,
-                    duration = duration
+                    contentFile = selectedLesson!!
                 ) {
+                    val startTime = sharedPreferences.getLong("timestamp", 0)
+                    val currentTime = Instant.now().toEpochMilli()  // Get current time in milliseconds
+                    val duration = Duration.between(
+                        Instant.ofEpochMilli(startTime),
+                        Instant.ofEpochMilli(currentTime)
+                    ).seconds
+                    Log.d("YO", "Session $sessionId")
+    //                val duration = 0L
+                    Log.d("YO", "Start $startTime")
                     Log.d("YO", "Duration: $duration")
                     val analytics = FirebaseAnalytics.getInstance(context)
                     analytics.logEvent("pdf_close") {
@@ -95,17 +98,19 @@ fun HomeScreen(
                         param("subject_code", selectedLesson!!.subjectCode)
                         param("chapter_code", selectedLesson!!.chapterCode)
                         param("chapter_name", selectedLesson!!.chapterName)
-                        param("session_id", sessionId)
+                        param("session_id", sessionId!!)
                         param("timestamp", currentTime)
                         param("duration", duration)
-                        // Reset the SharedPreferences value for the viewed lesson
-                        sharedPreferences.edit().putBoolean(selectedLesson!!.title, false).apply()
-                        sharedPreferences.edit().remove("session_id").apply()
-//                        currentScreenState = "home"
                     }
+
+                    // Reset the SharedPreferences value for the viewed lesson
+                    sharedPreferences.edit().putBoolean(selectedLesson!!.title, false).apply()
+//                        sharedPreferences.edit().remove("session_id").apply()
+                    currentScreenState = "home"
                 }
             }
         }
     }
 }
+
 

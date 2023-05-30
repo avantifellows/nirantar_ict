@@ -39,7 +39,7 @@ fun viewPdfFile(context: Context, file: File, fileToOpen: ContentFile) {
 
     val currentTime = Instant.now().toEpochMilli()  // Get current time in milliseconds
     Log.d("YO", "Start time: $currentTime")
-    sharedPreferences.edit().putLong("session_start_time", currentTime).apply()
+    sharedPreferences.edit().putLong("timestamp", currentTime).apply()
     // Write to Firebase analytics
     val analytics = FirebaseAnalytics.getInstance(context)
     analytics.logEvent("pdf_open") {

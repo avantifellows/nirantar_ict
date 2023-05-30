@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.avantifellows.nirantar.ContentFile
 
 @Composable
-fun LessonCompletionScreen(contentFile: ContentFile, sessionId: String, duration: Long, onDoneClicked: () -> Unit) {
+fun LessonCompletionScreen(contentFile: ContentFile, onDoneClicked: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
