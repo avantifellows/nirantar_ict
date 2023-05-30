@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.avantifellows.nirantar.ContentFile
 
 @Composable
-fun LessonCompletionScreen(contentFile: ContentFile, onDoneClicked: () -> Unit) {
+fun LessonCompletionScreen(contentFile: ContentFile, sessionId: String, duration: Long, onDoneClicked: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -32,6 +33,8 @@ fun LessonCompletionScreen(contentFile: ContentFile, onDoneClicked: () -> Unit) 
             modifier = Modifier.padding(top = 16.dp)
         ) {
             Text("Done with Lesson")
+
+
         }
     }
 }

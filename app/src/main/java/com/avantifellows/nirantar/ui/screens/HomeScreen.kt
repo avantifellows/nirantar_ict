@@ -12,6 +12,10 @@ import androidx.compose.ui.platform.LocalContext
 import com.avantifellows.nirantar.ContentFile
 import com.avantifellows.nirantar.components.LessonPlan
 import com.avantifellows.nirantar.viewmodels.ContentFileListViewModel
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
+import java.time.Duration
+import java.time.Instant
 
 @Composable
 fun HomeScreen(
@@ -38,7 +42,7 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit, block = {
-        vm.getContentFileListAsync() { checkAndSetActiveLesson()}
+        vm.getContentFileListAsync() { checkAndSetActiveLesson() }
 
     })
 
@@ -68,12 +72,37 @@ fun HomeScreen(
         }
         "doneWithLesson" -> {
             if (selectedLesson != null) {
-                LessonCompletionScreen(contentFile = selectedLesson!!) {
-                    currentScreenState = "home"
-                    // Reset the SharedPreferences value for the viewed lesson
-                    val sharedPreferences =
-                        context.getSharedPreferences("viewed_lessons", Context.MODE_PRIVATE)
-                    sharedPreferences.edit().putBoolean(selectedLesson!!.title, false).apply()
+                val sharedPreferences =
+                    context.getSharedPreferences("viewed_lessons", Context.MODE_PRIVATE)
+                val sessionId = sharedPreferences.getString("session_id", "")
+                val startTime = sharedPreferences.getLong("timestamp", 0)
+                val currentTime = Instant.now().toEpochMilli()  // Get current time in milliseconds
+                val duration = Duration.between(
+                    Instant.ofEpochMilli(startTime),
+                    Instant.ofEpochMilli(currentTime)
+                ).toSeconds()
+                LessonCompletionScreen(
+                    contentFile = selectedLesson!!,
+                    sessionId = sessionId!!,
+                    duration = duration
+                ) {
+                    Log.d("YO", "Duration: $duration")
+                    val analytics = FirebaseAnalytics.getInstance(context)
+                    analytics.logEvent("pdf_close") {
+                        param(FirebaseAnalytics.Param.ITEM_NAME, selectedLesson!!.title)
+                        param(FirebaseAnalytics.Param.CONTENT_TYPE, "pdf")
+                        param("subject_name", selectedLesson!!.subjectName)
+                        param("subject_code", selectedLesson!!.subjectCode)
+                        param("chapter_code", selectedLesson!!.chapterCode)
+                        param("chapter_name", selectedLesson!!.chapterName)
+                        param("session_id", sessionId)
+                        param("timestamp", currentTime)
+                        param("duration", duration)
+                        // Reset the SharedPreferences value for the viewed lesson
+                        sharedPreferences.edit().putBoolean(selectedLesson!!.title, false).apply()
+                        sharedPreferences.edit().remove("session_id").apply()
+//                        currentScreenState = "home"
+                    }
                 }
             }
         }

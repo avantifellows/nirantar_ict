@@ -54,8 +54,6 @@ fun LoginPage(onContinueClicked: (String) -> Unit, loginVm: LoginViewModel) {
         )
 
         Box(modifier = Modifier.height(24.dp)) {
-            Log.d("YO", "Button in button outside if!")
-            Log.d("YO", "Button in button outside if ${teacherIdValidationState.isValid}!")
             if (!teacherIdValidationState.isValid) {
                 Log.d("YO", "Button in button!")
                 Text(

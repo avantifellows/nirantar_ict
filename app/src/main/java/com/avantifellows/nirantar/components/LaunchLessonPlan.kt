@@ -60,9 +60,8 @@ fun LaunchLessonPlan(selectedLesson: ContentFile, onLaunchPdfClicked: () -> Unit
         Button(
             onClick = {
                 downloadStatus.value = downloadAndViewFile(
-                    selectedLesson.link,
-                    context = context,
-                    selectedLesson.title
+                    selectedLesson,
+                    context = context
                 )
             },
             enabled = selectedOption != null,
